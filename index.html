@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <title>Discord Lite</title>
 
     <style>
@@ -67,26 +66,27 @@
     <video autoplay></video>
 
     <script>
-        const pc = new RTCPeerConnection({
-            iceServers: [
-                {
-                    username: undefined,
-                    credential: undefined,
-                    url: 'stun:stun.voiparound.com',
-                    urls: ['stun:stun.voiparound.com']
-                },
-                {
-                    username: undefined,
-                    credential: undefined,
-                    url: 'stun:stun.voxgratia.org',
-                    urls: ['stun:stun.voxgratia.org']
-                }
-            ],
-        })
+        let pc;
 
         function create() {
             navigator.mediaDevices.getDisplayMedia({ audio: true, video: true })
                 .then(stream => {
+                    pc = new RTCPeerConnection({
+                        iceServers: [
+                            {
+                                username: undefined,
+                                credential: undefined,
+                                url: 'stun:stun.voiparound.com',
+                                urls: ['stun:stun.voiparound.com']
+                            },
+                            {
+                                username: undefined,
+                                credential: undefined,
+                                url: 'stun:stun.voxgratia.org',
+                                urls: ['stun:stun.voxgratia.org']
+                            }
+                        ],
+                    })
 
                     stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
@@ -121,6 +121,23 @@
             } else {
                 navigator.mediaDevices.getDisplayMedia({ audio: true, video: true })
                     .then(stream => {
+
+                        pc = new RTCPeerConnection({
+                            iceServers: [
+                                {
+                                    username: undefined,
+                                    credential: undefined,
+                                    url: 'stun:stun.voiparound.com',
+                                    urls: ['stun:stun.voiparound.com']
+                                },
+                                {
+                                    username: undefined,
+                                    credential: undefined,
+                                    url: 'stun:stun.voxgratia.org',
+                                    urls: ['stun:stun.voxgratia.org']
+                                }
+                            ],
+                        })
 
                         stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
