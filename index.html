@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Lite</title>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #313338;
+            overflow: hidden;
+        }
+
+        video {
+            width: auto;
+            height: 100vh;
+        }
+
+        .interface {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            grid-gap: 10px;
+            width: 100%;
+            height: fit-content;
+            background-color: #00000030;
+            z-index: 2;
+            padding: 10px 0;
+        }
+
+        .interface>* {
+            width: 30vw;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="interface">
+        <input id="desc" type="text">
+        <input id="cand" type="text">
+        <button id="create">create</button>
+        <button id="join">join</button>
+        <button id="candidate">candidate</button>
+        <button id="hide">hide</button>
+    </div>
+    <video autoplay></video>
+
+    <script>
+        let pc;
+
+        function create() {
+            navigator.mediaDevices.getDisplayMedia()
+                .then(stream => {
+                    pc = new RTCPeerConnection()
+
+                    stream.getTracks().forEach(track => pc.addTrack(track, stream))
+
+                    pc.addEventListener("icecandidate", event => {
+                        if (event.candidate) {
+                            console.log(event.candidate);
+                            document.querySelector("input#cand").value = JSON.stringify(event.candidate)
+                        }
+                    })
+
+                    pc.addEventListener("track", event => {
+                        console.log(event);
+                        event.streams.forEach(stream => {
+                            document.querySelector("video").srcObject = stream
+                        })
+                    })
+
+                    pc.createOffer().then(description => {
+                        pc.setLocalDescription(description)
+                        document.querySelector("input#desc").value = JSON.stringify(description)
+                    })
+                })
+        }
+
+        function join() {
+            const description = prompt()
+
+            if (!description) return;
+
+            if (pc?.localDescription) {
+                pc.setRemoteDescription(JSON.parse(description))
+            } else {
+                navigator.mediaDevices.getDisplayMedia()
+                    .then(stream => {
+                        pc = new RTCPeerConnection()
+
+                        stream.getTracks().forEach(track => pc.addTrack(track, stream))
+
+                        pc.addEventListener("icecandidate", event => {
+                            if (event.candidate) {
+                                console.log(event.candidate);
+                                document.querySelector("input#cand").value = JSON.stringify(event.candidate)
+                            }
+                        })
+
+                        pc.addEventListener("track", event => {
+                            console.log(event);
+                            event.streams.forEach(stream => {
+                                document.querySelector("video").srcObject = stream
+                            })
+                        })
+
+                        pc.setRemoteDescription(JSON.parse(description))
+                        pc.createAnswer().then(description => {
+                            pc.setLocalDescription(description)
+                            document.querySelector("input#desc").value = JSON.stringify(description)
+                        })
+                    })
+            }
+        }
+
+        function candidate() {
+            const candidate = prompt()
+            pc.addIceCandidate(JSON.parse(candidate))
+        }
+
+        function hide() {
+            document.querySelector(".interface").remove()
+        }
+
+        document.querySelector("button#create").addEventListener("click", create)
+        document.querySelector("button#join").addEventListener("click", join)
+        document.querySelector("button#candidate").addEventListener("click", candidate)
+        document.querySelector("button#hide").addEventListener("click", hide)
+    </script>
+</body>
+
+</html>
