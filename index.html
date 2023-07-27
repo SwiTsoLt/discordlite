@@ -28,8 +28,8 @@
         }
 
         video {
-            display: inline-block;
             width: auto;
+            min-width: 600px;
             height: 100vh;
         }
 
@@ -85,7 +85,7 @@
         })
 
         function create() {
-            navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+            navigator.mediaDevices.getDisplayMedia({ audio: true, video: true })
                 .then(stream => {
 
                     stream.getTracks().forEach(track => pc.addTrack(track, stream))
@@ -119,7 +119,7 @@
             if (pc?.localDescription) {
                 pc.setRemoteDescription(JSON.parse(description))
             } else {
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+                navigator.mediaDevices.getDisplayMedia({ audio: true, video: true })
                     .then(stream => {
 
                         stream.getTracks().forEach(track => pc.addTrack(track, stream))
