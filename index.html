@@ -103,7 +103,7 @@
             if (pc?.localDescription) {
                 pc.setRemoteDescription(JSON.parse(description))
             } else {
-                navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                     .then(stream => {
                         pc = new RTCPeerConnection()
 
