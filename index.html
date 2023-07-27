@@ -84,7 +84,7 @@
         })
 
         function create() {
-            navigator.mediaDevices.getDisplayMedia()
+            navigator.mediaDevices.getUserMedia()
                 .then(stream => {
 
                     stream.getTracks().forEach(track => pc.addTrack(track, stream))
@@ -118,7 +118,7 @@
             if (pc?.localDescription) {
                 pc.setRemoteDescription(JSON.parse(description))
             } else {
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+                navigator.mediaDevices.getUserMedia()
                     .then(stream => {
 
                         stream.getTracks().forEach(track => pc.addTrack(track, stream))
